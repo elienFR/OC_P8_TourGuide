@@ -13,8 +13,8 @@ public class GpsUtilService {
 
   private final GpsUtil gpsUtil = new GpsUtil();
 
-  public VisitedLocation getUserLocation(UUID userId) {
-    return gpsUtil.getUserLocation(userId);
+  public VisitedLocation getUserLocation(String userId) {
+    return gpsUtil.getUserLocation(UUID.fromString(userId));
   }
 
   public List<Attraction> getAttractions() {

@@ -23,7 +23,7 @@ public class ApiController {
   @GetMapping("/visitedLoc")
   public VisitedLocation getVisitedLocation(@RequestParam String userId){
     LOGGER.info("GET call on /gpsUtil/visitedLoc?userId="+userId);
-    return gpsUtilService.getUserLocation(UUID.fromString(userId));
+    return gpsUtilService.getUserLocation(userId);
   }
 
   @GetMapping("/attractions")
