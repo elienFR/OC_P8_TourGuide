@@ -3,11 +3,14 @@ package com.elienferre.trippricerms;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Locale;
+
 @SpringBootApplication
-public class TrippricermsApplication {
+public class TripPricerMsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TrippricermsApplication.class, args);
+		Locale.setDefault(Locale.FRENCH);
+		SpringApplication.run(TripPricerMsApplication.class, args);
 	}
 
 }
