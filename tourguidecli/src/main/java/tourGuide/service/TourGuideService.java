@@ -18,13 +18,15 @@ import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.beans.Attraction;
+import tourGuide.beans.Location;
+import tourGuide.beans.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.proxies.GpsUtilProxy;
+import tourGuide.proxies.TripPricerProxy;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
@@ -43,17 +45,18 @@ public class TourGuideService {
   public static ExecutorService executorService = Executors.newFixedThreadPool(8333);
   public static List<Future> futures = new ArrayList<>();
   public final Tracker tracker;
-  private final GpsUtil gpsUtil;
-  private final RewardsService rewardsService;
-  private final TripPricer tripPricer = new TripPricer();
   // Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
   private final Map<String, User> internalUserMap = new HashMap<>();
   boolean testMode = true;
+  @Autowired
+  private GpsUtilProxy gpsUtilProxy;
+  @Autowired
+  private RewardsService rewardsService;
+  @Autowired
+  private TripPricerProxy tripPricerProxy;
   private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 
-  public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
-    this.gpsUtil = gpsUtil;
-    this.rewardsService = rewardsService;
+  public TourGuideService() {
 
     if (testMode) {
       logger.info("TestMode enabled");
@@ -92,8 +95,14 @@ public class TourGuideService {
 
   public List<Provider> getTripDeals(User user) {
     int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-    List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
-      user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
+    List<Provider> providers = tripPricerProxy.getPrice(
+      tripPricerApiKey,
+      user.getUserId().toString(),
+      String.valueOf(user.getUserPreferences().getNumberOfAdults()),
+      String.valueOf(user.getUserPreferences().getNumberOfChildren()),
+      String.valueOf(user.getUserPreferences().getTripDuration()),
+      String.valueOf(cumulatativeRewardPoints)
+    );
     user.setTripDeals(providers);
     return providers;
   }
@@ -106,7 +115,7 @@ public class TourGuideService {
   }
 
   public VisitedLocation trackUserLocation(User user) {
-    VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+    VisitedLocation visitedLocation = gpsUtilProxy.getVisitedLocation(user.getUserId().toString());
     user.addToVisitedLocations(visitedLocation);
     rewardsService.calculateRewardsMultitasking(user);
     return visitedLocation;
@@ -114,7 +123,7 @@ public class TourGuideService {
 
   public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
     List<Attraction> nearbyAttractions = new ArrayList<>();
-    for (Attraction attraction : gpsUtil.getAttractions()) {
+    for (Attraction attraction : gpsUtilProxy.getAttractions()) {
       if (rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
         nearbyAttractions.add(attraction);
       }

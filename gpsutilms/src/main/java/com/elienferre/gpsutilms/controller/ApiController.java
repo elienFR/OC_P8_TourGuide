@@ -28,6 +28,7 @@ public class ApiController {
 
   @GetMapping("/attractions")
   public List<Attraction> getAttractions() {
+    LOGGER.info("GET call on /gpsUtil/attractions");
     return gpsUtilService.getAttractions();
   }
 

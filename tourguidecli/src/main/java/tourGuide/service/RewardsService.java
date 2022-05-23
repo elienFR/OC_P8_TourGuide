@@ -2,37 +2,39 @@ package tourGuide.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourGuide.beans.Attraction;
+import tourGuide.beans.Location;
+import tourGuide.beans.VisitedLocation;
+import tourGuide.proxies.GpsUtilProxy;
+import tourGuide.proxies.RewardCentralProxy;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
 @Service
 public class RewardsService {
 
+  @Autowired
+  private GpsUtilProxy gpsUtilProxy;
+  @Autowired
+  private RewardCentralProxy rewardCentralProxy;
+
   private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
   public static ExecutorService executorService = Executors.newFixedThreadPool(8333);
   public static List<Future> futures = new ArrayList<>();
-  private final GpsUtil gpsUtil;
-  private final RewardCentral rewardsCentral;
   // proximity in miles
   private int defaultProximityBuffer = 10;
   private int proximityBuffer = defaultProximityBuffer;
   private int attractionProximityRange = 200;
-
-  public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
-    this.gpsUtil = gpsUtil;
-    this.rewardsCentral = rewardCentral;
-  }
 
   public static ExecutorService getExecutorService() {
     return executorService;
@@ -58,7 +60,7 @@ public class RewardsService {
 
   public void calculateRewards(User user) {
     List<VisitedLocation> userLocations = user.getVisitedLocations();
-    List<Attraction> attractions = gpsUtil.getAttractions();
+    List<Attraction> attractions = gpsUtilProxy.getAttractions();
     for (VisitedLocation visitedLocation : userLocations) {
       for (Attraction attraction : attractions) {
         if (user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
@@ -79,7 +81,7 @@ public class RewardsService {
   }
 
   private int getRewardPoints(Attraction attraction, User user) {
-    return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+    return rewardCentralProxy.getAttractionRewardPoints(attraction.attractionId.toString(), user.getUserId().toString());
   }
 
   public double getDistance(Location loc1, Location loc2) {
