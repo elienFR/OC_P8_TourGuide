@@ -12,7 +12,7 @@ import java.util.concurrent.Future;
 @Service
 public final class MultiTaskService {
 
-  public static final ExecutorService executorService = Executors.newFixedThreadPool(2075);
+  public static final ExecutorService executorService = Executors.newFixedThreadPool(195);
   public static final List<Future> futures = new ArrayList<>();
 
   public static <T> Future<T> submit(Callable<T> callable) {

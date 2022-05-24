@@ -141,11 +141,14 @@ public class TestPerformance {
       MultiTaskService.executorService.shutdownNow();
     }
 
-    //TODO : cette assertion passe parfois et parfois non à 30000, à 40000 et au dessus elle ne passe jamais utilisateurs depuis que l'on est séparé en micro services
-    //TODO : L'assertion de temps passe bien mais l'assertion rewards>1 ne passe pas
-    //TODO : il compte une size de 0 sur le userRewards du premier user de la list allUsers ?!!
-    //TODO : c'est improbable.
-
+    // TODO : Cette assertion passe parfois et parfois non à 30000, à 40000 et au dessus elle ne passe jamais utilisateurs depuis que l'on est séparé en micro services
+    // TODO : L'assertion de temps passe bien mais l'assertion rewards>1 ne passe pas
+    // TODO : Il compte une size de 0 sur le userRewards du premier user de la list allUsers ?!!
+    // TODO : C'est improbable.
+    // TODO : Ca à l'air de provenir du nombre de threads employé dans executorService de rewardService
+    // TODO : Topcat possède 200 threads dans sa pool. Donc les micro service fonctionne avec 200 thread dans leur pool.
+    // TODO : on va donc régler moins de 200 threads dans la pool de reward service et voir ce que cela donne.
+    // TODO : LA SOLUTION SEMBLE ETRE TROUVEE. IL SEMBLERAIT QU'IL FAILLE QUE LE CLIENT AIT UNE THREAD POOL INFERIEUR A LA THREAD POOL PAR DEFAUT DE TOMCAT (200). CE DERNIER EXECUTE LE MICROSERVICE DONC IL FAUT QUE LA THREAD POOL DU CLIENT SOIT INFERIEUR à 200.
     userNumber = 0;
     for (User user : allUsers) {
       if (!(user.getUserRewards().size() > 0)) {
