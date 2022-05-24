@@ -2,8 +2,7 @@ package tourGuide;
 
 
 import java.util.*;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.apache.commons.lang3.time.StopWatch;
@@ -75,8 +74,8 @@ public class TestPerformance {
     TourGuideService.futures.stream().parallel().forEach(
       f -> {
         try {
-          f.get();
-        } catch (Exception e) {
+          f.get(20,TimeUnit.MINUTES);
+        } catch (Exception e){
           e.getMessage();
         }
       }
@@ -122,7 +121,8 @@ public class TestPerformance {
       );
     }
     receivedInfo = 0;
-    for (Future f : MultiTaskService.futures) {
+    List<Future> futures = MultiTaskService.futures;
+    for (Future f : futures) {
       try {
           f.get();
         System.out.println("received info : " + receivedInfo);
@@ -142,10 +142,9 @@ public class TestPerformance {
     }
 
     //TODO : cette assertion passe parfois et parfois non à 30000, à 40000 et au dessus elle ne passe jamais utilisateurs depuis que l'on est séparé en micro services
-    //TODO L'assertion de temps passe bien mais l'assertion rewards>1 ne passe pas
+    //TODO : L'assertion de temps passe bien mais l'assertion rewards>1 ne passe pas
     //TODO : il compte une size de 0 sur le userRewards du premier user de la list allUsers ?!!
     //TODO : c'est improbable.
-    //TOTO : en fait elle passe toujours à 100000 utilisateur quand on n'utilise pas docker.
 
     userNumber = 0;
     for (User user : allUsers) {
