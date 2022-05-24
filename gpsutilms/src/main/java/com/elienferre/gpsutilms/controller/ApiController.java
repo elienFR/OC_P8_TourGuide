@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/gpsUtil")
@@ -23,7 +22,7 @@ public class ApiController {
   @GetMapping("/visitedLoc")
   public VisitedLocation getVisitedLocation(@RequestParam String userId){
     LOGGER.info("GET call on /gpsUtil/visitedLoc?userId="+userId);
-    return gpsUtilService.getUserLocation(userId);
+    return gpsUtilService.getUserLocationThread(userId);
   }
 
   @GetMapping("/attractions")

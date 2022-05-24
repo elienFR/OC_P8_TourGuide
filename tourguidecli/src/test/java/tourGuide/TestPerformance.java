@@ -1,10 +1,10 @@
 package tourGuide;
 
 
-
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.apache.commons.lang3.time.StopWatch;
 
 
@@ -16,6 +16,7 @@ import tourGuide.beans.Attraction;
 import tourGuide.beans.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.GpsUtilService;
+import tourGuide.service.MultiTaskService;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
@@ -29,8 +30,13 @@ public class TestPerformance {
   private GpsUtilService gpsUtilService;
   @Autowired
   private RewardsService rewardsService;
+//  @Autowired
+//  private TourGuideService tourGuideService;
   @Autowired
-  private TourGuideService tourGuideService;
+  private MultiTaskService multiTaskService;
+
+  private Integer receivedInfo;
+  private Integer userNumber;
 
 
   /*
@@ -52,12 +58,15 @@ public class TestPerformance {
    *     highVolumeGetRewards: 100,000 users within 20 minutes:
    *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
    */
+  @Ignore
   @Test
   public void highVolumeTrackLocation() {
     Locale.setDefault(Locale.US);
     GpsUtil gpsUtil = new GpsUtil();
     // Users should be incremented up to 100,000, and test finishes within 15 minutes
     InternalTestHelper.setInternalUserNumber(100000);
+    TourGuideService tourGuideService = new TourGuideService();
+
 
     List<User> allUsers = new ArrayList<>();
     allUsers = tourGuideService.getAllUsers();
@@ -68,7 +77,7 @@ public class TestPerformance {
     allUsers.stream().forEach(u -> tourGuideService.trackUserLocationMultitasking(u));
     TourGuideService.futures.stream().parallel().forEach(
       f -> {
-        try{
+        try {
           f.get();
         } catch (Exception e) {
           e.getMessage();
@@ -77,7 +86,7 @@ public class TestPerformance {
     );
     RewardsService.futures.stream().parallel().forEach(
       f -> {
-        try{
+        try {
           f.get();
         } catch (Exception e) {
           e.getMessage();
@@ -99,32 +108,63 @@ public class TestPerformance {
     Locale.setDefault(Locale.FRENCH);
 
     // Users should be incremented up to 100,000, and test finishes within 20 minutes
-    InternalTestHelper.setInternalUserNumber(10000);
+    InternalTestHelper.setInternalUserNumber(100000);
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     TourGuideService tourGuideService = new TourGuideService();
 
-    //TODO : null pointer Exception ici !
     Attraction attraction = gpsUtilService.getAttractions().get(0);
-    List<User> allUsers = new ArrayList<>();
-    allUsers = tourGuideService.getAllUsers();
+    List<User> allUsers = new ArrayList<>(tourGuideService.getAllUsers());
     allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
-    allUsers.forEach(u -> rewardsService.calculateRewardsMultitasking(u));
-    RewardsService.futures.stream().parallel().forEach(
+    allUsers.forEach(
+      u->MultiTaskService.submit(
+        ()->rewardsService.calculateRewards(u)
+      )
+    );
+
+    receivedInfo = 0;
+    MultiTaskService.futures.stream().forEach(
       f -> {
         try {
           f.get();
+          System.out.println("received info : " + receivedInfo);
+          receivedInfo = receivedInfo + 1;
         } catch (Exception e) {
           e.getMessage();
         }
       }
     );
-    RewardsService.executorService.shutdown();
 
-    for (User user : allUsers) {
+    MultiTaskService.executorService.shutdown();
+    try {
+      if (!MultiTaskService.executorService.awaitTermination(20, TimeUnit.MINUTES)) {
+        MultiTaskService.executorService.shutdownNow();
+      }
+    } catch (InterruptedException e) {
+      MultiTaskService.executorService.shutdownNow();
+    }
+
+    //TODO : cette assertion ne passe plus avec 100000 utilisateurs depuis que l'on est séparé en micro services
+    //TODO L'assertion de temps passe bien mais l'assertion rewards>1 ne passe pas
+    //TODO : il compte une size de 0 sur le userRewards du premier user de la list allUsers ?!!
+    //TODO : c'est improbable.
+
+    userNumber = 0;
+    for(User user : allUsers) {
+      if (!(user.getUserRewards().size() > 0)) {
+        System.out.println(
+          "------ userNumber = " +
+            userNumber +
+            " : " +
+            (user.getUserRewards().size() > 0)
+        );
+        userNumber = userNumber + 1;
+      }
       assertTrue(user.getUserRewards().size() > 0);
     }
+
+
     stopWatch.stop();
     tourGuideService.tracker.stopTracking();
 

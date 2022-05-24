@@ -36,6 +36,13 @@ import tripPricer.TripPricer;
 @Service
 public class TourGuideService {
 
+  @Autowired
+  private GpsUtilProxy gpsUtilProxy;
+  @Autowired
+  private RewardsService rewardsService;
+  @Autowired
+  private TripPricerProxy tripPricerProxy;
+
   /**********************************************************************************
    *
    * Methods Below: For Internal Testing
@@ -48,12 +55,7 @@ public class TourGuideService {
   // Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
   private final Map<String, User> internalUserMap = new HashMap<>();
   boolean testMode = true;
-  @Autowired
-  private GpsUtilProxy gpsUtilProxy;
-  @Autowired
-  private RewardsService rewardsService;
-  @Autowired
-  private TripPricerProxy tripPricerProxy;
+
   private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 
   public TourGuideService() {
@@ -117,7 +119,8 @@ public class TourGuideService {
   public VisitedLocation trackUserLocation(User user) {
     VisitedLocation visitedLocation = gpsUtilProxy.getVisitedLocation(user.getUserId().toString());
     user.addToVisitedLocations(visitedLocation);
-    rewardsService.calculateRewardsMultitasking(user);
+//    rewardsService.calculateRewardsMultitasking(user);
+    rewardsService.calculateRewards(user);
     return visitedLocation;
   }
 
