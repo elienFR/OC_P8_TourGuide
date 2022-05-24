@@ -25,7 +25,7 @@ public class ApiController {
       "attId=" + attractionId +
       "&userId=" + userId
     );
-    return rewardCentralService.getAttractionRewardPoints(attractionId, userId);
+    return rewardCentralService.getAttractionRewardPointsThread(attractionId, userId);
   }
 
 }
