@@ -57,7 +57,7 @@ public class TestPerformance {
   @Order(1)
   public void highVolumeTrackLocation() {
     // Users should be incremented up to 100,000, and test finishes within 15 minutes
-    InternalTestHelper.setInternalUserNumber(100);
+    InternalTestHelper.setInternalUserNumber(100000);
     List<User> allUsers = new ArrayList<>();
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
@@ -98,7 +98,7 @@ public class TestPerformance {
   @Order(2)
   public void highVolumeGetRewards() {
     // Users should be incremented up to 100,000, and test finishes within 20 minutes
-    InternalTestHelper.setInternalUserNumber(100);
+    InternalTestHelper.setInternalUserNumber(100000);
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     TourGuideService tourGuideServiceToCreateUsers = new TourGuideService();
