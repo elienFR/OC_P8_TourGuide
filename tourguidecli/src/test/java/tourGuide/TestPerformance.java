@@ -6,7 +6,6 @@ import java.util.concurrent.*;
 
 import org.apache.commons.lang3.time.StopWatch;
 
-
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +57,7 @@ public class TestPerformance {
   @Order(1)
   public void highVolumeTrackLocation() {
     // Users should be incremented up to 100,000, and test finishes within 15 minutes
-    InternalTestHelper.setInternalUserNumber(100000);
+    InternalTestHelper.setInternalUserNumber(100);
     List<User> allUsers = new ArrayList<>();
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
@@ -99,7 +98,7 @@ public class TestPerformance {
   @Order(2)
   public void highVolumeGetRewards() {
     // Users should be incremented up to 100,000, and test finishes within 20 minutes
-    InternalTestHelper.setInternalUserNumber(100000);
+    InternalTestHelper.setInternalUserNumber(100);
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     TourGuideService tourGuideServiceToCreateUsers = new TourGuideService();

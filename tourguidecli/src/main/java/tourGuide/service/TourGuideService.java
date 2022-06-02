@@ -20,13 +20,12 @@ import org.springframework.stereotype.Service;
 
 import tourGuide.beans.Attraction;
 import tourGuide.beans.Location;
+import tourGuide.beans.Provider;
 import tourGuide.beans.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.proxies.TripPricerProxy;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
-import tripPricer.Provider;
 
 @Service
 public class TourGuideService {

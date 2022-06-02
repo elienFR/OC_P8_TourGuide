@@ -7,7 +7,6 @@ import java.util.UUID;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import rewardCentral.RewardCentral;
 import tourGuide.beans.Attraction;
 import tourGuide.beans.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
