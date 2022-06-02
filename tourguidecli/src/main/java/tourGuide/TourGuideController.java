@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jsoniter.output.JsonStream;
 
-import tourGuide.beans.Provider;
-import tourGuide.beans.VisitedLocation;
+import tourGuide.model.UserLocationDTO;
+import tourGuide.model.beans.Provider;
+import tourGuide.model.beans.VisitedLocation;
 import tourGuide.proxies.GpsUtilProxy;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
@@ -31,7 +32,7 @@ public class TourGuideController {
     
     @RequestMapping("/getLocation") 
     public String getLocation(@RequestParam String userName) {
-    	tourGuide.beans.VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+    	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
     }
     
@@ -56,18 +57,8 @@ public class TourGuideController {
     }
     
     @RequestMapping("/getAllCurrentLocations")
-    public String getAllCurrentLocations() {
-    	// TODO: Get a list of every user's most recent location as JSON
-    	//- Note: does not use gpsUtil to query for their current location, 
-    	//        but rather gathers the user's current location from their stored location history.
-    	//
-    	// Return object should be the just a JSON mapping of userId to Locations similar to:
-    	//     {
-    	//        "019b04a9-067a-4c76-8817-ee75088c3822": {"longitude":-48.188821,"latitude":74.84371} 
-    	//        ...
-    	//     }
-    	
-    	return JsonStream.serialize("");
+    public List<UserLocationDTO> getAllCurrentLocations() {
+    	return tourGuideService.getAllCurrentLocations();
     }
     
     @RequestMapping("/getTripDeals")

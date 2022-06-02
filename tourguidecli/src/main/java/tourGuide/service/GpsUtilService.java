@@ -2,8 +2,8 @@ package tourGuide.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tourGuide.beans.Attraction;
-import tourGuide.beans.VisitedLocation;
+import tourGuide.model.beans.Attraction;
+import tourGuide.model.beans.VisitedLocation;
 import tourGuide.proxies.GpsUtilProxy;
 
 import java.util.List;

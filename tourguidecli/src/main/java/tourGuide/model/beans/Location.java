@@ -1,4 +1,4 @@
-package tourGuide.beans;
+package tourGuide.model.beans;
 
 public class Location {
   public final double longitude;

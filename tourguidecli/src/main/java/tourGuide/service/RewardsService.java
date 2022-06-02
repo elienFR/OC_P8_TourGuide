@@ -9,9 +9,9 @@ import java.util.concurrent.Future;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tourGuide.beans.Attraction;
-import tourGuide.beans.Location;
-import tourGuide.beans.VisitedLocation;
+import tourGuide.model.beans.Attraction;
+import tourGuide.model.beans.Location;
+import tourGuide.model.beans.VisitedLocation;
 import tourGuide.proxies.RewardCentralProxy;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;

@@ -3,7 +3,7 @@
 // (powered by FernFlower decompiler)
 //
 
-package tourGuide.beans;
+package tourGuide.model.beans;
 
 import java.util.UUID;
 

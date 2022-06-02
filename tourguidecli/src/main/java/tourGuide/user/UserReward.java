@@ -1,8 +1,8 @@
 package tourGuide.user;
 
 
-import tourGuide.beans.Attraction;
-import tourGuide.beans.VisitedLocation;
+import tourGuide.model.beans.Attraction;
+import tourGuide.model.beans.VisitedLocation;
 
 public class UserReward {
 

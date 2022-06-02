@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import tourGuide.beans.Provider;
-import tourGuide.beans.VisitedLocation;
+import tourGuide.model.beans.Provider;
+import tourGuide.model.beans.VisitedLocation;
 
 public class User {
 	private final UUID userId;
@@ -87,7 +87,7 @@ public class User {
 		this.userPreferences = userPreferences;
 	}
 
-	public tourGuide.beans.VisitedLocation getLastVisitedLocation() {
+	public VisitedLocation getLastVisitedLocation() {
 		return visitedLocations.get(visitedLocations.size() - 1);
 	}
 	

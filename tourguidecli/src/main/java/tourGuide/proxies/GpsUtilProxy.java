@@ -4,8 +4,8 @@ package tourGuide.proxies;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import tourGuide.beans.Attraction;
-import tourGuide.beans.VisitedLocation;
+import tourGuide.model.beans.Attraction;
+import tourGuide.model.beans.VisitedLocation;
 
 import java.util.List;
 

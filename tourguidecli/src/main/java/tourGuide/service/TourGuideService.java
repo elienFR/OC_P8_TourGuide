@@ -18,10 +18,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tourGuide.beans.Attraction;
-import tourGuide.beans.Location;
-import tourGuide.beans.Provider;
-import tourGuide.beans.VisitedLocation;
+import tourGuide.model.UserLocationDTO;
+import tourGuide.model.beans.Attraction;
+import tourGuide.model.beans.Location;
+import tourGuide.model.beans.Provider;
+import tourGuide.model.beans.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
@@ -160,4 +161,34 @@ public class TourGuideService {
     return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
   }
 
+  /**
+   * This method returns all last visited location for every user in DB.
+   *
+   * @return a list of each user with ist last visited location.
+   */
+  public List<UserLocationDTO> getAllCurrentLocations() {
+    List<UserLocationDTO> usersLastLocations = new ArrayList<>();
+    List<User> allUsers = getAllUsers();
+
+    for(User user : allUsers) {
+      VisitedLocation lastVisitedLocation = new VisitedLocation(
+        UUID.fromString("0-0-0-0-0"),
+        new Location(generateRandomLatitude(), generateRandomLongitude()),
+        Date.from(LocalDateTime.of(0,1,1,0,0).toInstant(ZoneOffset.UTC))
+      );
+
+      for(VisitedLocation visitedLocation : user.getVisitedLocations()){
+        if(visitedLocation.getTimeVisited().after(lastVisitedLocation.getTimeVisited())){
+          lastVisitedLocation=visitedLocation;
+        }
+      }
+      UserLocationDTO lastUserLocationDTO = new UserLocationDTO();
+      lastUserLocationDTO.setLocation(lastVisitedLocation.getLocation());
+      lastUserLocationDTO.setUserId(user.getUserId());
+
+      usersLastLocations.add(lastUserLocationDTO);
+    }
+
+    return usersLastLocations;
+  }
 }

@@ -7,8 +7,8 @@ import java.util.UUID;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import tourGuide.beans.Attraction;
-import tourGuide.beans.VisitedLocation;
+import tourGuide.model.beans.Attraction;
+import tourGuide.model.beans.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.proxies.GpsUtilProxy;
 import tourGuide.service.RewardsService;
@@ -34,7 +34,7 @@ public class TestRewardsService {
 		InternalTestHelper.setInternalUserNumber(0);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		tourGuide.beans.Attraction attraction = gpsUtilProxy.getAttractions().get(0);
+		Attraction attraction = gpsUtilProxy.getAttractions().get(0);
 		user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
 		tourGuideService.trackUserLocation(user);
 		List<UserReward> userRewards = user.getUserRewards();

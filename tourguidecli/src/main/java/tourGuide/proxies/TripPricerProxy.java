@@ -3,7 +3,7 @@ package tourGuide.proxies;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import tourGuide.beans.Provider;
+import tourGuide.model.beans.Provider;
 
 import java.util.List;
 

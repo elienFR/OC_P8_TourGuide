@@ -8,9 +8,11 @@ import java.util.UUID;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import tourGuide.beans.Attraction;
-import tourGuide.beans.Provider;
-import tourGuide.beans.VisitedLocation;
+import org.springframework.boot.test.context.SpringBootTest;
+import tourGuide.model.UserLocationDTO;
+import tourGuide.model.beans.Attraction;
+import tourGuide.model.beans.Provider;
+import tourGuide.model.beans.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -18,6 +20,8 @@ import tourGuide.user.User;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//TODO EFE : some test fails here. Correct them
+@SpringBootTest
 public class TestTourGuideService {
 
 	@Autowired
@@ -90,7 +94,7 @@ public class TestTourGuideService {
 		InternalTestHelper.setInternalUserNumber(0);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		tourGuide.beans.VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
+		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 		
 		List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
 		
@@ -109,6 +113,18 @@ public class TestTourGuideService {
 		tourGuideService.tracker.stopTracking();
 		
 		assertEquals(10, providers.size());
+	}
+
+	//TODO : finish this test
+	@Test
+	public void getAllCurrentLocationsTest() {
+
+		List<User> allUsers = tourGuideService.getAllUsers();
+		List<UserLocationDTO> allUsersLastLocation = tourGuideService.getAllCurrentLocations();
+		allUsersLastLocation.forEach(
+			uL-> System.out.println(uL)
+		);
+		System.out.println("test finished");
 	}
 	
 	
