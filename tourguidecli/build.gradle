@@ -31,10 +31,6 @@ dependencies {
     implementation group: 'com.jsoniter', name: 'jsoniter', version: '0.9.23'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
-    implementation(name:'gpsUtil', ext:'jar')
-    implementation(name:'RewardCentral', ext:'jar')
-    implementation(name:'TripPricer', ext:'jar')
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

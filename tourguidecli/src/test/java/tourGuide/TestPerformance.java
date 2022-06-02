@@ -7,6 +7,7 @@ import java.util.concurrent.*;
 import org.apache.commons.lang3.time.StopWatch;
 
 
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,6 +55,7 @@ public class TestPerformance {
    *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
    */
   @Test
+  @Order(1)
   public void highVolumeTrackLocation() {
     // Users should be incremented up to 100,000, and test finishes within 15 minutes
     InternalTestHelper.setInternalUserNumber(100000);
@@ -81,14 +83,8 @@ public class TestPerformance {
       }
     }
 
-//    MultiTaskService.executorService.shutdown();
-//    try {
-//      if (!MultiTaskService.executorService.awaitTermination(20, TimeUnit.MINUTES)) {
-//        MultiTaskService.executorService.shutdownNow();
-//      }
-//    } catch (InterruptedException e) {
-//      MultiTaskService.executorService.shutdownNow();
-//    }
+    //we don't shutdown the executor service her because the other test needs to be realised with the same executor service.
+    //The shutdown is executed in the second test
 
     MultiTaskService.clearFutures();
 
@@ -100,6 +96,7 @@ public class TestPerformance {
   }
 
   @Test
+  @Order(2)
   public void highVolumeGetRewards() {
     // Users should be incremented up to 100,000, and test finishes within 20 minutes
     InternalTestHelper.setInternalUserNumber(100000);
@@ -111,11 +108,12 @@ public class TestPerformance {
     List<User> allUsers = new ArrayList<>(tourGuideServiceToCreateUsers.getAllUsers());
     allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
-    for (User user : allUsers) {
-      MultiTaskService.submit(
-        () -> rewardsService.calculateRewards(user)
-      );
-    }
+    allUsers.forEach(
+      u->MultiTaskService.submit(
+        ()->rewardsService.calculateRewards(u)
+      )
+    );
+
     receivedInfo = 0;
     List<Future> futures = MultiTaskService.futures;
     for (Future f : futures) {
@@ -128,14 +126,14 @@ public class TestPerformance {
       }
     }
 
-//    MultiTaskService.executorService.shutdown();
-//    try {
-//      if (!MultiTaskService.executorService.awaitTermination(20, TimeUnit.MINUTES)) {
-//        MultiTaskService.executorService.shutdownNow();
-//      }
-//    } catch (InterruptedException e) {
-//      MultiTaskService.executorService.shutdownNow();
-//    }
+    MultiTaskService.executorService.shutdown();
+    try {
+      if (!MultiTaskService.executorService.awaitTermination(20, TimeUnit.MINUTES)) {
+        MultiTaskService.executorService.shutdownNow();
+      }
+    } catch (InterruptedException e) {
+      MultiTaskService.executorService.shutdownNow();
+    }
 
     MultiTaskService.clearFutures();
 
