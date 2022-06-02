@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -25,23 +22,21 @@ import tourGuide.beans.Attraction;
 import tourGuide.beans.Location;
 import tourGuide.beans.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.proxies.GpsUtilProxy;
 import tourGuide.proxies.TripPricerProxy;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
-import tripPricer.TripPricer;
 
 @Service
 public class TourGuideService {
 
   @Autowired
-  private GpsUtilProxy gpsUtilProxy;
+  private GpsUtilService gpsUtilService;
   @Autowired
   private RewardsService rewardsService;
   @Autowired
-  private TripPricerProxy tripPricerProxy;
+  private TripPricerService tripPricerService;
 
   /**********************************************************************************
    *
@@ -49,8 +44,6 @@ public class TourGuideService {
    *
    **********************************************************************************/
   private static final String tripPricerApiKey = "test-server-api-key";
-  public static ExecutorService executorService = Executors.newFixedThreadPool(8333);
-  public static List<Future> futures = new ArrayList<>();
   public final Tracker tracker;
   // Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
   private final Map<String, User> internalUserMap = new HashMap<>();
@@ -97,36 +90,25 @@ public class TourGuideService {
 
   public List<Provider> getTripDeals(User user) {
     int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-    List<Provider> providers = tripPricerProxy.getPrice(
+    List<Provider> providers = tripPricerService.getPrice(
       tripPricerApiKey,
-      user.getUserId().toString(),
-      String.valueOf(user.getUserPreferences().getNumberOfAdults()),
-      String.valueOf(user.getUserPreferences().getNumberOfChildren()),
-      String.valueOf(user.getUserPreferences().getTripDuration()),
-      String.valueOf(cumulatativeRewardPoints)
+      user,
+      cumulatativeRewardPoints
     );
     user.setTripDeals(providers);
     return providers;
   }
 
-  public void trackUserLocationMultitasking(User user) {
-    futures.add(executorService.submit(
-        () -> trackUserLocation(user)
-      )
-    );
-  }
-
   public VisitedLocation trackUserLocation(User user) {
-    VisitedLocation visitedLocation = gpsUtilProxy.getVisitedLocation(user.getUserId().toString());
+    VisitedLocation visitedLocation = gpsUtilService.getVisitedLocation(user.getUserId());
     user.addToVisitedLocations(visitedLocation);
-//    rewardsService.calculateRewardsMultitasking(user);
     rewardsService.calculateRewards(user);
     return visitedLocation;
   }
 
   public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
     List<Attraction> nearbyAttractions = new ArrayList<>();
-    for (Attraction attraction : gpsUtilProxy.getAttractions()) {
+    for (Attraction attraction : gpsUtilService.getAttractions()) {
       if (rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
         nearbyAttractions.add(attraction);
       }

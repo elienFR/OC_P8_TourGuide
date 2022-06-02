@@ -27,4 +27,8 @@ public final class MultiTaskService {
     return f;
   }
 
+
+  public static void clearFutures() {
+    futures.clear();
+  }
 }

@@ -3,10 +3,11 @@ package tourGuide.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tourGuide.beans.Attraction;
+import tourGuide.beans.VisitedLocation;
 import tourGuide.proxies.GpsUtilProxy;
 
-import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This Service manages gpsUtil microservice
@@ -23,5 +24,14 @@ public class GpsUtilService {
    */
   public List<Attraction> getAttractions() {
     return gpsUtilProxy.getAttractions();
+  }
+
+  /**
+   * This method returns the visited location of a specific user.
+   * @param userId is the UUID of the concerned user
+   * @return a visited location object
+   */
+  public VisitedLocation getVisitedLocation(UUID userId) {
+    return gpsUtilProxy.getVisitedLocation(userId.toString());
   }
 }
