@@ -115,7 +115,7 @@ public class TestTourGuideService {
 		assertEquals(10, providers.size());
 	}
 
-	//TODO : finish this test
+	//TODO EFE : finish this test
 	@Test
 	public void getAllCurrentLocationsTest() {
 
@@ -124,7 +124,8 @@ public class TestTourGuideService {
 		allUsersLastLocation.forEach(
 			uL-> System.out.println(uL)
 		);
-		System.out.println("test finished");
+
+		System.out.println("getAllCurrentLocationsTest() finished");
 	}
 	
 	

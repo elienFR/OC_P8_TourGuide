@@ -191,4 +191,8 @@ public class TourGuideService {
 
     return usersLastLocations;
   }
+
+  private UserLocationDTO getLatestLocationFromList(List<VisitedLocation> visitedLocations){
+    return null;
+  }
 }
