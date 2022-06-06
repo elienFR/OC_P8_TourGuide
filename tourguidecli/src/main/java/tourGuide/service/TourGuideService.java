@@ -166,20 +166,18 @@ public class TourGuideService {
    *
    * @return a list of each user with ist last visited location.
    */
-  public List<UserLocationDTO> getAllCurrentLocations() {
+  public List<UserLocationDTO> getAllCurrentLocations(List<User> users) {
     List<UserLocationDTO> usersLastLocations = new ArrayList<>();
-    List<User> allUsers = getAllUsers();
-
-    for(User user : allUsers) {
+    for (User user : users) {
       VisitedLocation lastVisitedLocation = new VisitedLocation(
         UUID.fromString("0-0-0-0-0"),
         new Location(generateRandomLatitude(), generateRandomLongitude()),
-        Date.from(LocalDateTime.of(0,1,1,0,0).toInstant(ZoneOffset.UTC))
+        Date.from(LocalDateTime.of(0, 1, 1, 0, 0).toInstant(ZoneOffset.UTC))
       );
 
-      for(VisitedLocation visitedLocation : user.getVisitedLocations()){
-        if(visitedLocation.getTimeVisited().after(lastVisitedLocation.getTimeVisited())){
-          lastVisitedLocation=visitedLocation;
+      for (VisitedLocation visitedLocation : user.getVisitedLocations()) {
+        if (visitedLocation.getTimeVisited().after(lastVisitedLocation.getTimeVisited())) {
+          lastVisitedLocation = visitedLocation;
         }
       }
       UserLocationDTO lastUserLocationDTO = new UserLocationDTO();
@@ -192,7 +190,7 @@ public class TourGuideService {
     return usersLastLocations;
   }
 
-  private UserLocationDTO getLatestLocationFromList(List<VisitedLocation> visitedLocations){
+  private UserLocationDTO getLatestLocationFromList(List<VisitedLocation> visitedLocations) {
     return null;
   }
 }

@@ -58,7 +58,7 @@ public class TourGuideController {
     
     @RequestMapping("/getAllCurrentLocations")
     public List<UserLocationDTO> getAllCurrentLocations() {
-    	return tourGuideService.getAllCurrentLocations();
+    	return tourGuideService.getAllCurrentLocations(tourGuideService.getAllUsers());
     }
     
     @RequestMapping("/getTripDeals")

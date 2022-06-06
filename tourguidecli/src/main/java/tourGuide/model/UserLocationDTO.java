@@ -2,6 +2,7 @@ package tourGuide.model;
 
 import tourGuide.model.beans.Location;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserLocationDTO {
@@ -26,13 +27,23 @@ public class UserLocationDTO {
 
   @Override
   public String toString() {
-    return "UserLocationDTO{" +
-      "userId=" + userId.toString() +
-      ", location="
-      + "{"
-      + "longitude:" + getLocation().longitude
-      + ", latitude:" + getLocation().latitude
-      + "}"
+    return "UserLocationDTO{"
+      + "userId=" + userId.toString()
+      + ", "
+      + location.toString()
       + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UserLocationDTO that = (UserLocationDTO) o;
+    return getUserId().equals(that.getUserId()) && getLocation().equals(that.getLocation());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getUserId(), getLocation());
   }
 }
