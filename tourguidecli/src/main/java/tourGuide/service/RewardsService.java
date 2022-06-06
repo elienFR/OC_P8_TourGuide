@@ -47,21 +47,28 @@ public class RewardsService {
     proximityBuffer = defaultProximityBuffer;
   }
 
-  public UserReward calculateRewards(User user) {
+  public void calculateRewards(User user) {
     List<VisitedLocation> userLocations = user.getVisitedLocations();
     List<Attraction> attractions = gpsUtilService.getAttractions();
-    for (VisitedLocation visitedLocation : userLocations) {
-      for (Attraction attraction : attractions) {
+    userLocations.stream().parallel().forEach(
+      (visitedLocation)->{
+//    for (VisitedLocation visitedLocation : userLocations) {
+//      System.out.println(visitedLocation);
+//      for (Attraction attraction : attractions) {
+//        System.out.println(attraction);
+      attractions.stream().parallel().forEach(
+        (attraction) -> {
         if (user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
           if (nearAttraction(visitedLocation, attraction)) {
             UserReward rewardToAdd = new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user));
             user.addUserReward(rewardToAdd);
-            return rewardToAdd;
           }
         }
       }
+      );
+
     }
-    return null;
+    );
   }
 
   public boolean isWithinAttractionProximity(Attraction attraction, Location location) {

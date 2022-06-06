@@ -2,13 +2,7 @@ package tourGuide.service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -89,11 +83,11 @@ public class TourGuideService {
   }
 
   public List<Provider> getTripDeals(User user) {
-    int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+    int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
     List<Provider> providers = tripPricerService.getPrice(
       tripPricerApiKey,
       user,
-      cumulatativeRewardPoints
+      cumulativeRewardPoints
     );
     user.setTripDeals(providers);
     return providers;
@@ -106,15 +100,18 @@ public class TourGuideService {
     return visitedLocation;
   }
 
-  public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-    List<Attraction> nearbyAttractions = new ArrayList<>();
-    for (Attraction attraction : gpsUtilService.getAttractions()) {
-      if (rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-        nearbyAttractions.add(attraction);
-      }
+  public List<Attraction> getNearbyAttractions(VisitedLocation userLocation) {
+    Map<Double, Attraction> nearbyAttractionsMap = new TreeMap<>();
+    List<Attraction> attractionsList = gpsUtilService.getAttractions();
+    for (Attraction attraction : attractionsList) {
+      nearbyAttractionsMap.put(rewardsService.getDistance(attraction,userLocation.getLocation()),attraction);
     }
 
-    return nearbyAttractions;
+    List<Attraction> nearestByAttractions = nearbyAttractionsMap.entrySet().stream().limit(5).collect(
+      ArrayList::new, (a, e) -> a.add(e.getValue()), ArrayList::addAll
+    );
+
+    return nearestByAttractions;
   }
 
   private void addShutDownHook() {
@@ -124,8 +121,8 @@ public class TourGuideService {
       }
     });
   }
-
-  private void initializeInternalUsers() {
+  public void initializeInternalUsers() {
+    internalUserMap.clear();
     IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
       String userName = "internalUser" + i;
       String phone = "000";
@@ -193,4 +190,6 @@ public class TourGuideService {
   private UserLocationDTO getLatestLocationFromList(List<VisitedLocation> visitedLocations) {
     return null;
   }
+
+
 }

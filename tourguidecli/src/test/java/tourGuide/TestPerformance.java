@@ -4,9 +4,9 @@ package tourGuide;
 import java.util.*;
 import java.util.concurrent.*;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.apache.commons.lang3.time.StopWatch;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,6 @@ public class TestPerformance {
    *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
    */
 
-  @Ignore
   @Test
   @Order(1)
   public void highVolumeTrackLocation() {
@@ -101,7 +100,6 @@ public class TestPerformance {
   }
 
 
-  @Ignore
   @Test
   @Order(2)
   public void highVolumeGetRewards() {
