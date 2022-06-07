@@ -57,7 +57,7 @@ public class TestPerformance {
    *     highVolumeGetRewards: 100,000 users within 20 minutes:
    *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
    */
-
+  @Disabled
   @Test
   @Order(1)
   public void highVolumeTrackLocation() {
@@ -99,7 +99,7 @@ public class TestPerformance {
     assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
   }
 
-
+  @Disabled
   @Test
   @Order(2)
   public void highVolumeGetRewards() {
