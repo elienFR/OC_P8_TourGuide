@@ -32,10 +32,10 @@ cache:
     - gradle assemble -p $MODULE
   cache:
     policy: push
-#  artifacts:
-#    expire_in: 10 min
-#    paths:
-#      - $MODULE/build
+  artifacts:
+    expire_in: 10 min
+    paths:
+      - build/libs/*.jar
 
 .test-module:
   stage: test
