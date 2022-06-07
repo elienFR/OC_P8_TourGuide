@@ -1,0 +1,6 @@
+.rewardcentralms-module:
+  variables:
+    MODULE: "rewardcentralms"
+  only:
+    changes:
+      - "rewardcentralms/**/*"

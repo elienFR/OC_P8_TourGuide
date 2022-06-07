@@ -1,0 +1,88 @@
+image: gradle:alpine
+
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  CACHE_KEY: "$CI_COMMIT_REF_NAME"
+
+before_script:
+  - GRADLE_USER_HOME="$(pwd)/.gradle"
+  - export GRADLE_USER_HOME
+
+include:
+  - local: gpsutilms/.gitlab-ci.yml
+  - local: rewardcentralms/.gitlab-ci.yml
+  - local: tourguidecli/.gitlab-ci.yml
+  - local: trippricerms/.gitlab-ci.yml
+
+cache:
+  key: $CACHE_KEY
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+.build-module:
+  stage: build
+  script:
+    - echo "Building $MODULE"
+    - gradle assemble -p $MODULE
+  cache:
+    policy: push
+#  artifacts:
+#    expire_in: 10 min
+#    paths:
+#      - $MODULE/build
+
+.test-module:
+  stage: test
+  script:
+    - echo "Testing $MODULE"
+    - gradle check -p $MODULE
+  cache:
+    policy: pull
+
+# BUILD JOBS
+build-gpsutilms-module:
+  extends:
+    - .gpsutilms-module
+    - .build-module
+
+build-rewardcentralms-module:
+  extends:
+    - .rewardcentralms-module
+    - .build-module
+
+build-trippricerms-module:
+  extends:
+    - .trippricerms-module
+    - .build-module
+
+build-tourguidecli-module:
+  extends:
+    - .tourguidecli-module
+    - .build-module
+
+# TEST JOBS
+test-gpsutilms-module:
+  extends:
+    - .gpsutilms-module
+    - .test-module
+
+test-rewardcentralms-module:
+  extends:
+    - .rewardcentralms-module
+    - .test-module
+
+test-trippricerms-module:
+  extends:
+    - .trippricerms-module
+    - .test-module
+
+test-tourguidecli-module:
+  extends:
+    - .tourguidecli-module
+    - .test-module

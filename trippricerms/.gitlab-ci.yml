@@ -1,0 +1,6 @@
+.trippricerms-module:
+  variables:
+    MODULE: "trippricerms"
+  only:
+    changes:
+      - "trippricerms/**/*"

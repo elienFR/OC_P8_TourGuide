@@ -1,0 +1,6 @@
+.tourguidecli-module:
+  variables:
+    MODULE: "tourguidecli"
+  only:
+    changes:
+      - "tourguidecli/**/*"

@@ -1,0 +1,6 @@
+.gpsutilms-module:
+  variables:
+    MODULE: "gpsutilms"
+  only:
+    changes:
+      - "gpsutilms/**/*"
