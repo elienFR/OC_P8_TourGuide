@@ -63,9 +63,14 @@ public class TestPerformance {
   public void highVolumeTrackLocation() {
     System.out.println("Beginning Track highVolumeTrackLocation with " + InternalTestHelper.getInternalUserNumber() + " users.");
     List<User> allUsers = new ArrayList<>();
+
+    // Set this to 100000 for perf testing
+    InternalTestHelper.setInternalUserNumber(100000);
+    TourGuideService tourGuideServiceForUsersList = new TourGuideService();
+
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
-    allUsers = tourGuideService.getAllUsers();
+    allUsers = tourGuideServiceForUsersList.getAllUsers();
 
     allUsers.forEach(
       u -> MultiTaskService.submit(
@@ -105,11 +110,15 @@ public class TestPerformance {
   public void highVolumeGetRewards() {
     System.out.println("Beginning Track highVolumeGetRewards with " + InternalTestHelper.getInternalUserNumber() + " users.");
 
+    // Set this to 100000 for perf testing
+    InternalTestHelper.setInternalUserNumber(100000);
+    TourGuideService tourGuideServiceForUsersList = new TourGuideService();
+
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
 
     Attraction attraction = gpsUtilService.getAttractions().get(0);
-    List<User> allUsers = new ArrayList<>(tourGuideService.getAllUsers());
+    List<User> allUsers = new ArrayList<>(tourGuideServiceForUsersList.getAllUsers());
     allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
     allUsers.forEach(
