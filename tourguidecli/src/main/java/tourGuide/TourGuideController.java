@@ -12,7 +12,6 @@ import com.jsoniter.output.JsonStream;
 import tourGuide.model.UserLocationDTO;
 import tourGuide.model.beans.Provider;
 import tourGuide.model.beans.VisitedLocation;
-import tourGuide.proxies.GpsUtilProxy;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 
@@ -22,15 +21,24 @@ public class TourGuideController {
 	@Autowired
 	private TourGuideService tourGuideService;
 
-  @Autowired
-  private GpsUtilProxy gpsUtilProxy;
-	
+  /**
+   *
+   * This endpoint is the front page of the api.
+   *
+   * @return a welcoming message.
+   */
     @RequestMapping("/")
     public String index() {
         return "Greetings from TourGuide!";
     }
-    
-    @RequestMapping("/getLocation") 
+
+  /**
+   * This endpoint is used to track one user location
+   *
+   * @param userName is the username of the tracked user
+   * @return a string containing the last longitude and latitude of a user.
+   */
+  @RequestMapping("/getLocation")
     public String getLocation(@RequestParam String userName) {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
@@ -45,23 +53,50 @@ public class TourGuideController {
         // The distance in miles between the user's location and each of the attractions.
         // The reward points for visiting each Attraction.
         //    Note: Attraction reward points can be gathered from RewardsCentral
+
+  /**
+   * This endpoint is used to display for a specific user, the five closest attraction from this user,
+   * the longitude and latitude of each of these attractions, the longitude and latitude of the user,
+   * the distance in miles between the user and the attraction, and eventually the reward points given
+   * to the user if all these attractions are visited.
+   *
+   * @param userName is the username of the concerned user you want to get the nearest attractions.
+   * @return see description above to know what the JSON contains.
+   */
     @RequestMapping("/getNearbyAttractions") 
     public String getNearbyAttractions(@RequestParam String userName) {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
     	return JsonStream.serialize(tourGuideService.getNearbyAttractions(visitedLocation));
     }
-    
-    @RequestMapping("/getRewards") 
+
+  /**
+   * This endpoint calculates reward for a specific user.
+   *
+   * @param userName is the username of the user you want to calculate the reward points
+   * @return an integer corresponding of the reward points owned by a user.
+   */
+  @RequestMapping("/getRewards")
     public String getRewards(@RequestParam String userName) {
     	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
     }
-    
-    @RequestMapping("/getAllCurrentLocations")
+
+  /**
+   * This endpoint is used to give you all the last location of each user in the app's database.
+   *
+   * @return a JSON list of all user's last location from DB.
+   */
+  @RequestMapping("/getAllCurrentLocations")
     public List<UserLocationDTO> getAllCurrentLocations() {
     	return tourGuideService.getAllCurrentLocations(tourGuideService.getAllUsers());
     }
-    
-    @RequestMapping("/getTripDeals")
+
+  /**
+   * This endpoint is used to fetch trip deals from a user, thanks to its reward points and its parameters.
+   *
+   * @param userName is the username of the user you want to create a trip deal.
+   * @return a list of providers with their name, the price they give you their service, and the uuid of the trip deal.
+   */
+  @RequestMapping("/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
     	return JsonStream.serialize(providers);

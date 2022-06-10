@@ -29,7 +29,7 @@ public class TestRewardsService {
 	@Autowired
 	private GpsUtilProxy gpsUtilProxy;
 
-	@Disabled
+
 	@Test
 	public void userGetRewards() {
 		InternalTestHelper.setInternalUserNumber(0);
@@ -46,14 +46,14 @@ public class TestRewardsService {
 		assertTrue(userRewards.size() == 1);
 	}
 
-	@Disabled
+
 	@Test
 	public void isWithinAttractionProximity() {
 		Attraction attraction = gpsUtilProxy.getAttractions().get(0);
 		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
 	}
 
-	@Disabled
+
 	@Test
 	public void nearAllAttractions() {
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);

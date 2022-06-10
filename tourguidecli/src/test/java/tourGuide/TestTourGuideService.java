@@ -26,7 +26,7 @@ import tourGuide.user.User;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-//TODO EFE : some test fails here. Correct them
+//TODO EFE : make test being unit tests and not integration tests
 @SpringBootTest
 public class TestTourGuideService {
 
@@ -80,7 +80,7 @@ public class TestTourGuideService {
     usersAtTest.add(userSample2);
   }
 
-  @Disabled
+
   @Test
   public void getUserLocation() {
     User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
@@ -122,7 +122,7 @@ public class TestTourGuideService {
     assertTrue(allUsers.contains(user));
     assertTrue(allUsers.contains(user2));
   }
-  @Disabled
+
   @Test
   public void trackUser() {
     User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
@@ -132,7 +132,7 @@ public class TestTourGuideService {
 
     assertEquals(user.getUserId(), visitedLocation.userId);
   }
-  @Disabled
+
   @Test
   public void getNearbyAttractions() {
     User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
@@ -144,7 +144,7 @@ public class TestTourGuideService {
 
     assertEquals(5, attractions.size());
   }
-  @Disabled
+
   @Test
   public void getTripDeals() {
     User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
