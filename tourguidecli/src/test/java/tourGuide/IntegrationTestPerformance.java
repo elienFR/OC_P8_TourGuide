@@ -22,8 +22,9 @@ import tourGuide.user.User;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 @SpringBootTest
-public class TestPerformance {
+public class IntegrationTestPerformance {
 
   @Autowired
   private GpsUtilService gpsUtilService;

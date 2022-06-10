@@ -50,9 +50,9 @@ public class RewardsService {
   public void calculateRewards(User user) {
     List<VisitedLocation> userLocations = user.getVisitedLocations();
     List<Attraction> attractions = gpsUtilService.getAttractions();
-    userLocations.stream().parallel().forEach(
+    userLocations.stream().forEach(
       (visitedLocation)->{
-      attractions.stream().parallel().forEach(
+      attractions.stream().forEach(
         (attraction) -> {
         if (user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
           if (nearAttraction(visitedLocation, attraction)) {
@@ -62,7 +62,6 @@ public class RewardsService {
         }
       }
       );
-
     }
     );
   }

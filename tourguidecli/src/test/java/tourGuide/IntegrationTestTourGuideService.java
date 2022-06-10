@@ -9,6 +9,7 @@ import java.util.UUID;
 
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,9 +26,10 @@ import tourGuide.user.User;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-//TODO EFE : make test being unit tests and not integration tests
+
+@Disabled
 @SpringBootTest
-public class TestTourGuideService {
+public class IntegrationTestTourGuideService {
 
   /* --------------- IMPORTANT ----------------------
 
@@ -88,39 +90,9 @@ public class TestTourGuideService {
     assertTrue(visitedLocation.userId.equals(user.getUserId()));
   }
 
-  @Test
-  public void addUser() {
-    User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-    User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
 
 
-    tourGuideService.addUser(user);
-    tourGuideService.addUser(user2);
 
-    User retrievedUser = tourGuideService.getUser(user.getUserName());
-    User retrievedUser2 = tourGuideService.getUser(user2.getUserName());
-
-    tourGuideService.tracker.stopTracking();
-
-    assertEquals(user, retrievedUser);
-    assertEquals(user2, retrievedUser2);
-  }
-
-  @Test
-  public void getAllUsers() {
-    User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-    User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
-
-    tourGuideService.addUser(user);
-    tourGuideService.addUser(user2);
-
-    List<User> allUsers = tourGuideService.getAllUsers();
-
-    tourGuideService.tracker.stopTracking();
-
-    assertTrue(allUsers.contains(user));
-    assertTrue(allUsers.contains(user2));
-  }
 
   @Test
   public void trackUser() {
@@ -155,19 +127,5 @@ public class TestTourGuideService {
     assertEquals(5, providers.size());
   }
 
-  @Test
-  public void getAllCurrentLocationsTest() {
-    List<UserLocationDTO> expected = new ArrayList<>();
-    UserLocationDTO userLocationDTO1 = new UserLocationDTO();
-    userLocationDTO1.setUserId(uuid1);
-    userLocationDTO1.setLocation(location12);
-    UserLocationDTO userLocationDTO2 = new UserLocationDTO();
-    userLocationDTO2.setUserId(uuid2);
-    userLocationDTO2.setLocation(location22);
-    expected.add(userLocationDTO1);
-    expected.add(userLocationDTO2);
 
-    List<UserLocationDTO> result = tourGuideService.getAllCurrentLocations(usersAtTest);
-    assertThat(result).isEqualTo(expected);
-  }
 }
