@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tourGuide.model.NearbyAttractionDTO;
+import tourGuide.model.NearbyAttractionsDTO;
 import tourGuide.model.UserLocationDTO;
 import tourGuide.model.beans.Attraction;
 import tourGuide.model.beans.Location;
@@ -100,18 +102,51 @@ public class TourGuideService {
     return visitedLocation;
   }
 
-  public List<Attraction> getNearbyAttractions(VisitedLocation userLocation) {
+  //  Instead: Get the closest five tourist attractions to the user - no matter how far away they are.
+  //  Return a new JSON object that contains:
+  // Name of Tourist attraction,
+  // Tourist attractions lat/long,
+  // The user's location lat/long,
+  // The distance in miles between the user's location and each of the attractions.
+  // The reward points for visiting each Attraction.
+  //    Note: Attraction reward points can be gathered from RewardsCentral
+  public NearbyAttractionsDTO getNearbyAttractions(User user) {
+    NearbyAttractionsDTO nearbyAttractionsDTO = new NearbyAttractionsDTO();
+    nearbyAttractionsDTO.setNearbyAttractions(new ArrayList<>());
+
+    //Gathering user location
+    VisitedLocation userVisitedLocation = getUserLocation(user);
+    nearbyAttractionsDTO.setUserLocation(userVisitedLocation.getLocation());
+
+    // Gathering the five nearest attractions
     Map<Double, Attraction> nearbyAttractionsMap = new TreeMap<>();
+    // First we recover all attractions in gpsUtil
     List<Attraction> attractionsList = gpsUtilService.getAttractions();
     for (Attraction attraction : attractionsList) {
-      nearbyAttractionsMap.put(rewardsService.getDistance(attraction,userLocation.getLocation()),attraction);
+      nearbyAttractionsMap.put(rewardsService.getDistance(attraction, getUserLocation(user).getLocation()), attraction);
     }
-
-    List<Attraction> nearestByAttractions = nearbyAttractionsMap.entrySet().stream().limit(5).collect(
+    // Then we check which are the five nearest
+    List<Attraction> nearbyAttractions = nearbyAttractionsMap.entrySet().stream().limit(5).collect(
       ArrayList::new, (a, e) -> a.add(e.getValue()), ArrayList::addAll
     );
-
-    return nearestByAttractions;
+    // For each nearest attraction we create the nearbyAttractionDTO.
+    nearbyAttractions.forEach(
+      a -> {
+        NearbyAttractionDTO nearbyAttractionDTO = new NearbyAttractionDTO();
+        nearbyAttractionDTO.setAttractionName(a.attractionName);
+        Location attractionLocation = new Location(a.longitude,a.latitude);
+        nearbyAttractionDTO.setAttractionLocation(attractionLocation);
+        nearbyAttractionDTO.setDistanceInMiles(rewardsService.getDistance(
+          attractionLocation,
+          userVisitedLocation.getLocation()
+        ));
+        nearbyAttractionDTO.setRewardPoints(
+          rewardsService.getRewardPoints(a,user)
+        );
+        nearbyAttractionsDTO.getNearbyAttractions().add(nearbyAttractionDTO);
+      }
+    );
+    return nearbyAttractionsDTO;
   }
 
   private void addShutDownHook() {
@@ -121,6 +156,7 @@ public class TourGuideService {
       }
     });
   }
+
   public void initializeInternalUsers() {
     internalUserMap.clear();
     IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {

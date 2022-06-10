@@ -52,10 +52,6 @@ public class RewardsService {
     List<Attraction> attractions = gpsUtilService.getAttractions();
     userLocations.stream().parallel().forEach(
       (visitedLocation)->{
-//    for (VisitedLocation visitedLocation : userLocations) {
-//      System.out.println(visitedLocation);
-//      for (Attraction attraction : attractions) {
-//        System.out.println(attraction);
       attractions.stream().parallel().forEach(
         (attraction) -> {
         if (user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
@@ -79,7 +75,7 @@ public class RewardsService {
     return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
   }
 
-  private int getRewardPoints(Attraction attraction, User user) {
+  public int getRewardPoints(Attraction attraction, User user) {
     return rewardCentralProxy.getAttractionRewardPoints(attraction.attractionId.toString(), user.getUserId().toString());
   }
 

@@ -9,12 +9,11 @@ import java.util.UUID;
 
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import tourGuide.model.NearbyAttractionsDTO;
 import tourGuide.model.UserLocationDTO;
-import tourGuide.model.beans.Attraction;
 import tourGuide.model.beans.Location;
 import tourGuide.model.beans.Provider;
 import tourGuide.model.beans.VisitedLocation;
@@ -138,11 +137,11 @@ public class TestTourGuideService {
     User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
     VisitedLocation userLocation = tourGuideService.trackUserLocation(user);
 
-    List<Attraction> attractions = tourGuideService.getNearbyAttractions(userLocation);
+    NearbyAttractionsDTO attractions = tourGuideService.getNearbyAttractions(user);
 
     tourGuideService.tracker.stopTracking();
 
-    assertEquals(5, attractions.size());
+    assertEquals(5, attractions.getNearbyAttractions().size());
   }
 
   @Test

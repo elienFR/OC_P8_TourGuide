@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jsoniter.output.JsonStream;
 
+import tourGuide.model.NearbyAttractionDTO;
+import tourGuide.model.NearbyAttractionsDTO;
 import tourGuide.model.UserLocationDTO;
 import tourGuide.model.beans.Provider;
 import tourGuide.model.beans.VisitedLocation;
@@ -64,9 +66,8 @@ public class TourGuideController {
    * @return see description above to know what the JSON contains.
    */
     @RequestMapping("/getNearbyAttractions") 
-    public String getNearbyAttractions(@RequestParam String userName) {
-    	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-    	return JsonStream.serialize(tourGuideService.getNearbyAttractions(visitedLocation));
+    public NearbyAttractionsDTO getNearbyAttractions(@RequestParam String userName) {
+    	return tourGuideService.getNearbyAttractions(getUser(userName));
     }
 
   /**
