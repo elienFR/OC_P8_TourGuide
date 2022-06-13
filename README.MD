@@ -40,7 +40,9 @@ This app is an exercice about improving the performance an API on an existing ap
 
 ## Instructions
 
-1. Create image docker for *trippricerms*, *rewardcentralsms*, and *gpsutilms*. And run each of them through containers. <br> More info here : https://spring.io/guides/gs/spring-boot-docker/
+1. Create image docker for *trippricerms*, *rewardcentralsms*, and *gpsutilms*. And run each of them through containers.
+<br> **More info here** : https://spring.io/guides/gs/spring-boot-docker/
+<br></br>
 2. Run *tourguidecli* via your IDE or via the built jar.
 
 ## Info
