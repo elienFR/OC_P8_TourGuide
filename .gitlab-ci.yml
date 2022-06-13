@@ -33,6 +33,7 @@ cache:
   cache:
     policy: push
   artifacts:
+    untracked: true
     expire_in: 10 min
     paths:
       - build/libs/*.jar
