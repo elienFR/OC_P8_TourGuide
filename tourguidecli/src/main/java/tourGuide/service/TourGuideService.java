@@ -126,14 +126,14 @@ public class TourGuideService {
       a -> {
         NearbyAttractionDTO nearbyAttractionDTO = new NearbyAttractionDTO();
         nearbyAttractionDTO.setAttractionName(a.attractionName);
-        Location attractionLocation = new Location(a.longitude,a.latitude);
+        Location attractionLocation = new Location(a.longitude, a.latitude);
         nearbyAttractionDTO.setAttractionLocation(attractionLocation);
         nearbyAttractionDTO.setDistanceInMiles(rewardsService.getDistance(
           attractionLocation,
           userVisitedLocation.getLocation()
         ));
         nearbyAttractionDTO.setRewardPoints(
-          rewardsService.getRewardPoints(a,user)
+          rewardsService.getRewardPoints(a, user)
         );
         nearbyAttractionsDTO.getNearbyAttractions().add(nearbyAttractionDTO);
       }
@@ -157,6 +157,8 @@ public class TourGuideService {
       String email = userName + "@tourGuide.com";
       User user = new User(UUID.randomUUID(), userName, phone, email);
       generateUserLocationHistory(user);
+      user.getUserPreferences().setNumberOfAdults(1 + new Random().nextInt(2));
+      user.getUserPreferences().setNumberOfChildren(1 + new Random().nextInt(4));
 
       internalUserMap.put(userName, user);
     });

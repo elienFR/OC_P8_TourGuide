@@ -1,5 +1,6 @@
 package tourGuide;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,12 @@ import com.jsoniter.output.JsonStream;
 import tourGuide.model.NearbyAttractionDTO;
 import tourGuide.model.NearbyAttractionsDTO;
 import tourGuide.model.UserLocationDTO;
+import tourGuide.model.beans.Location;
 import tourGuide.model.beans.Provider;
 import tourGuide.model.beans.VisitedLocation;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
+import tourGuide.user.UserReward;
 
 @RestController
 public class TourGuideController {
@@ -41,9 +44,9 @@ public class TourGuideController {
    * @return a string containing the last longitude and latitude of a user.
    */
   @RequestMapping("/getLocation")
-    public String getLocation(@RequestParam String userName) {
+    public Location getLocation(@RequestParam String userName) {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-		return JsonStream.serialize(visitedLocation.location);
+		return visitedLocation.location;
     }
     
   /**
@@ -67,8 +70,8 @@ public class TourGuideController {
    * @return an integer corresponding of the reward points owned by a user.
    */
   @RequestMapping("/getRewards")
-    public String getRewards(@RequestParam String userName) {
-    	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
+    public List<UserReward> getRewards(@RequestParam String userName) {
+    	return tourGuideService.getUserRewards(getUser(userName));
     }
 
   /**
@@ -88,9 +91,9 @@ public class TourGuideController {
    * @return a list of providers with their name, the price they give you their service, and the uuid of the trip deal.
    */
   @RequestMapping("/getTripDeals")
-    public String getTripDeals(@RequestParam String userName) {
+    public List<Provider> getTripDeals(@RequestParam String userName) {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
-    	return JsonStream.serialize(providers);
+    	return providers;
     }
     
     private User getUser(String userName) {
