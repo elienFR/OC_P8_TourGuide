@@ -128,10 +128,12 @@ public class TourGuideService {
         nearbyAttractionDTO.setAttractionName(a.attractionName);
         Location attractionLocation = new Location(a.longitude, a.latitude);
         nearbyAttractionDTO.setAttractionLocation(attractionLocation);
-        nearbyAttractionDTO.setDistanceInMiles(rewardsService.getDistance(
-          attractionLocation,
-          userVisitedLocation.getLocation()
-        ));
+        nearbyAttractionDTO.setDistanceInKm(
+          rewardsService.getDistanceInKm(
+            attractionLocation,
+            userVisitedLocation.getLocation()
+          )
+        );
         nearbyAttractionDTO.setRewardPoints(
           rewardsService.getRewardPoints(a, user)
         );
@@ -217,4 +219,10 @@ public class TourGuideService {
     return usersLastLocations;
   }
 
+  public User setUserPreferences(String userName, int numAdults, int numChildren) {
+    User user = getUser(userName);
+    user.getUserPreferences().setNumberOfAdults(numAdults);
+    user.getUserPreferences().setNumberOfChildren(numChildren);
+    return user;
+  }
 }

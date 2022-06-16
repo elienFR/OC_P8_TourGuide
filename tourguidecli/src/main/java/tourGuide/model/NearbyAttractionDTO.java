@@ -6,7 +6,7 @@ public class NearbyAttractionDTO {
 
   private String attractionName;
   private Location attractionLocation;
-  private double distanceInMiles;
+  private double distanceInKm;
   private int rewardPoints;
 
   public String getAttractionName() {
@@ -25,12 +25,12 @@ public class NearbyAttractionDTO {
     this.attractionLocation = attractionLocation;
   }
 
-  public double getDistanceInMiles() {
-    return distanceInMiles;
+  public double getDistanceInKm() {
+    return distanceInKm;
   }
 
-  public void setDistanceInMiles(double distanceInMiles) {
-    this.distanceInMiles = distanceInMiles;
+  public void setDistanceInKm(double distanceInKm) {
+    this.distanceInKm = distanceInKm;
   }
 
   public int getRewardPoints() {

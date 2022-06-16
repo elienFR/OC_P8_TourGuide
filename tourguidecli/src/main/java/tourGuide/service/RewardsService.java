@@ -20,6 +20,7 @@ import tourGuide.user.UserReward;
 public class RewardsService {
 
   private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
+  private static final double STATUTE_KM_PER_MILES = 1.609344;
   public static ExecutorService executorService = Executors.newFixedThreadPool(200);
   public static List<Future> futures = new ArrayList<>();
   @Autowired
@@ -51,18 +52,18 @@ public class RewardsService {
     List<VisitedLocation> userLocations = user.getVisitedLocations();
     List<Attraction> attractions = gpsUtilService.getAttractions();
     userLocations.stream().forEach(
-      (visitedLocation)->{
-      attractions.stream().forEach(
-        (attraction) -> {
-        if (user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-          if (nearAttraction(visitedLocation, attraction)) {
-            UserReward rewardToAdd = new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user));
-            user.addUserReward(rewardToAdd);
+      (visitedLocation) -> {
+        attractions.stream().forEach(
+          (attraction) -> {
+            if (user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+              if (nearAttraction(visitedLocation, attraction)) {
+                UserReward rewardToAdd = new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user));
+                user.addUserReward(rewardToAdd);
+              }
+            }
           }
-        }
+        );
       }
-      );
-    }
     );
   }
 
@@ -90,6 +91,10 @@ public class RewardsService {
     double nauticalMiles = 60 * Math.toDegrees(angle);
     double statuteMiles = STATUTE_MILES_PER_NAUTICAL_MILE * nauticalMiles;
     return statuteMiles;
+  }
+
+  public double getDistanceInKm(Location loc1, Location loc2) {
+    return (getDistance(loc1, loc2) * STATUTE_KM_PER_MILES);
   }
 
 }
