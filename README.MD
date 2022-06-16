@@ -55,11 +55,13 @@ Here are the exposed port on each app and microservices :
 
 ## Tourguide API Endpoints :
 - host address :
-  - ***localhost:8080***
+  - ***localhost:8080*** (as 8080 is the default port, but it can be changed in application.properties file)
 - list of endpoints :
   - ***/*** : This endpoint is the front page of the api.
-  - ***/getLocation*** : This endpoint is used to track one user location
-  - ***/getNearbyAttractions*** : This endpoint is used to display for a specific user, the five closest attractions from this user, the longitude and latitude of each of these attractions, the longitude and latitude of the user, the distance in miles between the user and each attraction, and eventually the reward points given to the user if all these attractions are visited. 
-  - ***/getRewards*** : This endpoint calculates reward for a specific user.
+  - ***/getLocation?userName=<Username>*** : This endpoint is used to track one user location.
+  - ***/getNearbyAttractions?userName=<Username>*** : This endpoint is used to display for a specific user, the five closest attractions from this user, the longitude and latitude of each of these attractions, the longitude and latitude of the user, the distance in miles between the user and each attraction, and eventually the reward points given to the user if all these attractions are visited. 
+  - ***/getRewards?userName=<Username>*** : This endpoint calculates reward for a specific user.
   - ***/getAllCurrentLocations*** : This endpoint is used to give you all the last location of each user in the app's database.
-  - ***/getTripDeals*** : This endpoint is used to fetch trip deals from a user, thanks to its reward points and its parameters.
+  - ***/getTripDeals?userName=<Username>*** : This endpoint is used to fetch trip deals from a user, thanks to its reward points and its parameters.
+  - ***/getUser?userName=<Username>*** : This endpoint is used to display a user.
+  - ***/setUserPref?userName=<Username>&numAdults=<numberOfAdults>&numChildren=<numberOfChildren>*** : this endpoint is used to set a user's preferences.
